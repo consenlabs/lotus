@@ -151,7 +151,7 @@ create index if not exists state_heights_parentstateroot_index
 }
 
 func (s *Syncer) Start(ctx context.Context) {
-	if err := logging.SetLogLevel("syncer", "info"); err != nil {
+	if err := logging.SetLogLevel("syncer", "debug"); err != nil {
 		log.Fatal(err)
 	}
 	log.Debug("Starting Syncer")
