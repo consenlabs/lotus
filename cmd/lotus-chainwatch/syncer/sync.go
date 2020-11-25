@@ -152,7 +152,7 @@ create index if not exists state_heights_parentstateroot_index
 }
 
 func (s *Syncer) Start(ctx context.Context) {
-	if err := logging.SetLogLevel("syncer", "info"); err != nil {
+	if err := logging.SetLogLevel("syncer", "debug"); err != nil {
 		log.Fatal(err)
 	}
 	log.Debug("Starting Syncer")
@@ -226,6 +226,7 @@ func (s *Syncer) unsyncedBlocks(ctx context.Context, head *types.TipSet, since u
 	if err != nil {
 		return nil, err
 	}
+	log.Debugw("UnsyncedBlock", "current_height", head.Height())
 
 	// build a list of blocks that we have not synced.
 	toVisit := list.New()
@@ -243,9 +244,7 @@ func (s *Syncer) unsyncedBlocks(ctx context.Context, head *types.TipSet, since u
 		}
 
 		toSync[bh.Cid()] = bh
-		if len(toSync)%500 == 10 {
-			log.Debugw("To visit", "toVisit", toVisit.Len(), "toSync", len(toSync), "current_height", bh.Height)
-		}
+		log.Debugw("To visit", "toVisit", toVisit.Len(), "toSync", len(toSync), "current_height", bh.Height)
 
 		if bh.Height == 0 {
 			continue
@@ -266,7 +265,7 @@ func (s *Syncer) unsyncedBlocks(ctx context.Context, head *types.TipSet, since u
 }
 
 func (s *Syncer) syncedBlocks(since, limit uint64) (map[cid.Cid]struct{}, error) {
-	rws, err := s.db.Query(`select bs.cid FROM blocks_synced bs left join blocks b on b.cid = bs.cid where b.height <= $1 and bs.processed_at is not null limit $2`, since, limit)
+	rws, err := s.db.Query(`select bs.cid FROM blocks_synced bs left join blocks b on b.cid = bs.cid where b.height <= $1 and bs.processed_at is not null order by b.height desc limit $2`, since, limit)
 	if err != nil {
 		return nil, xerrors.Errorf("Failed to query blocks_synced: %w", err)
 	}
