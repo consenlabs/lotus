@@ -31,6 +31,10 @@ var runCmd = &cli.Command{
 			Name:  "max-batch",
 			Value: 50,
 		},
+		&cli.BoolFlag{
+			Name:  "catch-up",
+			Value: false,
+		},
 	},
 	Action: func(cctx *cli.Context) error {
 		go func() {
@@ -74,6 +78,7 @@ var runCmd = &cli.Command{
 		log.Infof("Remote version: %s", v.Version)
 
 		maxBatch := cctx.Int("max-batch")
+		catchUp := cctx.Bool("catch-up")
 
 		db, err := sql.Open("postgres", cctx.String("db"))
 		if err != nil {
@@ -90,8 +95,10 @@ var runCmd = &cli.Command{
 		}
 		db.SetMaxOpenConns(1350)
 
-		sync := syncer.NewSyncer(db, api, 1400)
-		sync.Start(ctx)
+		if !catchUp {
+			sync := syncer.NewSyncer(db, api, 1400)
+			sync.Start(ctx)
+		}
 
 		proc := processor.NewProcessor(ctx, db, api, maxBatch)
 		proc.Start(ctx)
