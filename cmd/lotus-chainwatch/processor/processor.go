@@ -104,7 +104,7 @@ func (p *Processor) Start(ctx context.Context) {
 		log.Fatalw("Failed to get genesis state from lotus", "error", err.Error())
 	}
 
-	go p.subMpool(ctx)
+	//go p.subMpool(ctx)
 
 	// main processor loop
 	go func() {
@@ -142,23 +142,23 @@ func (p *Processor) Start(ctx context.Context) {
 
 				grp := sync.WaitGroup{}
 
-				grp.Add(1)
-				go func() {
-					defer grp.Done()
-					if err := p.HandleMarketChanges(ctx, actorChanges[builtin2.StorageMarketActorCodeID]); err != nil {
-						log.Errorf("Failed to handle market changes: %w", err)
-						return
-					}
-				}()
+				//grp.Add(1)
+				//go func() {
+				//	defer grp.Done()
+				//	if err := p.HandleMarketChanges(ctx, actorChanges[builtin2.StorageMarketActorCodeID]); err != nil {
+				//		log.Errorf("Failed to handle market changes: %w", err)
+				//		return
+				//	}
+				//}()
 
-				grp.Add(1)
-				go func() {
-					defer grp.Done()
-					if err := p.HandleMinerChanges(ctx, actorChanges[builtin2.StorageMinerActorCodeID]); err != nil {
-						log.Errorf("Failed to handle miner changes: %w", err)
-						return
-					}
-				}()
+				//grp.Add(1)
+				//go func() {
+				//	defer grp.Done()
+				//	if err := p.HandleMinerChanges(ctx, actorChanges[builtin2.StorageMinerActorCodeID]); err != nil {
+				//		log.Errorf("Failed to handle miner changes: %w", err)
+				//		return
+				//	}
+				//}()
 
 				grp.Add(1)
 				go func() {

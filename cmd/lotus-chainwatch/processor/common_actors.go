@@ -132,9 +132,6 @@ type UpdateAddresses struct {
 
 func (p Processor) storeActorAddresses(ctx context.Context, actors map[cid.Cid]ActorTips) error {
 	start := time.Now()
-	defer func() {
-		log.Debugw("Stored Actor Addresses", "duration", time.Since(start).String())
-	}()
 
 	addressToID := map[address.Address]address.Address{}
 	// HACK until genesis storage is figured out:
@@ -167,6 +164,14 @@ func (p Processor) storeActorAddresses(ctx context.Context, actors map[cid.Cid]A
 		return err
 	}
 	tx, err := p.db.Begin()
+	defer func() {
+		log.Debugw("Stored Actor Addresses", "duration", time.Since(start).String())
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
 	if err != nil {
 		return err
 	}
@@ -203,16 +208,21 @@ create temp table iam (like id_address_map excluding constraints) on commit drop
 		return nil
 	}
 
-	return tx.Commit()
+	return err
 }
 
 func (p *Processor) storeActorHeads(actors map[cid.Cid]ActorTips) error {
 	start := time.Now()
-	defer func() {
-		log.Debugw("Stored Actor Heads", "duration", time.Since(start).String())
-	}()
 	// Basic
 	tx, err := p.db.Begin()
+	defer func() {
+		log.Debugw("Stored Actor Heads", "duration", time.Since(start).String())
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
 	if err != nil {
 		return err
 	}
@@ -249,16 +259,21 @@ func (p *Processor) storeActorHeads(actors map[cid.Cid]ActorTips) error {
 		return xerrors.Errorf("actor put: %w", err)
 	}
 
-	return tx.Commit()
+	return err
 }
 
 func (p *Processor) storeActorStates(actors map[cid.Cid]ActorTips) error {
 	start := time.Now()
-	defer func() {
-		log.Debugw("Stored Actor States", "duration", time.Since(start).String())
-	}()
 	// States
 	tx, err := p.db.Begin()
+	defer func() {
+		log.Debugw("Stored Actor States", "duration", time.Since(start).String())
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
 	if err != nil {
 		return err
 	}
@@ -295,5 +310,5 @@ func (p *Processor) storeActorStates(actors map[cid.Cid]ActorTips) error {
 		return xerrors.Errorf("actor put: %w", err)
 	}
 
-	return tx.Commit()
+	return err
 }
