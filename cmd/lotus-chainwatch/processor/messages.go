@@ -104,15 +104,12 @@ func (p *Processor) persistMessagesAndReceipts(ctx context.Context, blocks map[c
 	grp, _ := errgroup.WithContext(ctx)
 
 	grp.Go(func() error {
+		p.storeReceipts(receipts)
 		return p.storeMessages(messages)
 	})
 
 	grp.Go(func() error {
 		return p.storeMsgInclusions(inclusions)
-	})
-
-	grp.Go(func() error {
-		return p.storeReceipts(receipts)
 	})
 
 	return grp.Wait()
@@ -269,9 +266,9 @@ func (p *Processor) fetchMessages(ctx context.Context, blocks map[cid.Cid]*types
 		}
 
 		lk.Lock()
-		for _, message := range vmm {
-			messages[message.Cid()] = message
-			inclusions[header.Cid()] = append(inclusions[header.Cid()], message.Cid())
+		for i, message := range vmm {
+			messages[msgs.Cids[i]] = message
+			inclusions[header.Cid()] = append(inclusions[header.Cid()], msgs.Cids[i])
 		}
 		lk.Unlock()
 	})
