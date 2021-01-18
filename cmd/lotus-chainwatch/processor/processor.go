@@ -160,23 +160,23 @@ func (p *Processor) Start(ctx context.Context) {
 				//	}
 				//}()
 
-				grp.Add(1)
-				go func() {
-					defer grp.Done()
-					if err := p.HandleRewardChanges(ctx, actorChanges[builtin2.RewardActorCodeID], nullRounds); err != nil {
-						log.Errorf("Failed to handle reward changes: %v", err)
-						return
-					}
-				}()
+				//grp.Add(1)
+				//go func() {
+				//	defer grp.Done()
+				//	if err := p.HandleRewardChanges(ctx, actorChanges[builtin2.RewardActorCodeID], nullRounds); err != nil {
+				//		log.Errorf("Failed to handle reward changes: %w", err)
+				//		return
+				//	}
+				//}()
 
-				grp.Add(1)
-				go func() {
-					defer grp.Done()
-					if err := p.HandlePowerChanges(ctx, actorChanges[builtin2.StoragePowerActorCodeID]); err != nil {
-						log.Errorf("Failed to handle power actor changes: %v", err)
-						return
-					}
-				}()
+				//grp.Add(1)
+				//go func() {
+				//	defer grp.Done()
+				//	if err := p.HandlePowerChanges(ctx, actorChanges[builtin2.StoragePowerActorCodeID]); err != nil {
+				//		log.Errorf("Failed to handle power actor changes: %w", err)
+				//		return
+				//	}
+				//}()
 
 				grp.Add(1)
 				go func() {
@@ -187,14 +187,14 @@ func (p *Processor) Start(ctx context.Context) {
 					}
 				}()
 
-				grp.Add(1)
-				go func() {
-					defer grp.Done()
-					if err := p.HandleCommonActorsChanges(ctx, actorChanges); err != nil {
-						log.Errorf("Failed to handle common actor changes: %v", err)
-						return
-					}
-				}()
+				//grp.Add(1)
+				//go func() {
+				//	defer grp.Done()
+				//	if err := p.HandleCommonActorsChanges(ctx, actorChanges); err != nil {
+				//		log.Errorf("Failed to handle common actor changes: %w", err)
+				//		return
+				//	}
+				//}()
 
 				grp.Wait()
 
