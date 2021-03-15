@@ -25,7 +25,7 @@ func GetFullNodeAPIUsingCredentials(ctx context.Context, listenAddr, token strin
 	return client.NewFullNodeRPC(ctx, apiURI(addr), apiHeaders(token))
 }
 func apiURI(addr string) string {
-	return "ws://" + addr + "/rpc/v0"
+	return "http://" + addr + "/rpc/v0"
 }
 func apiHeaders(token string) http.Header {
 	headers := http.Header{}
