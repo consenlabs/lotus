@@ -15,7 +15,6 @@ import (
 	logging "github.com/ipfs/go-log/v2"
 
 	"github.com/filecoin-project/go-state-types/abi"
-	builtin2 "github.com/filecoin-project/specs-actors/v2/actors/builtin"
 
 	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/chain/types"
@@ -129,16 +128,16 @@ func (p *Processor) Start(ctx context.Context) {
 				// TODO special case genesis state handling here to avoid all the special cases that will be needed for it else where
 				// before doing "normal" processing.
 
-				actorChanges, nullRounds, err := p.collectActorChanges(ctx, toProcess)
-				if err != nil {
-					log.Fatalw("Failed to collect actor changes", "error", err)
-				}
-				log.Infow("Collected Actor Changes",
-					"MarketChanges", len(actorChanges[builtin2.StorageMarketActorCodeID]),
-					"MinerChanges", len(actorChanges[builtin2.StorageMinerActorCodeID]),
-					"RewardChanges", len(actorChanges[builtin2.RewardActorCodeID]),
-					"AccountChanges", len(actorChanges[builtin2.AccountActorCodeID]),
-					"nullRounds", len(nullRounds))
+				//actorChanges, nullRounds, err := p.collectActorChanges(ctx, toProcess)
+				//if err != nil {
+				//	log.Fatalw("Failed to collect actor changes", "error", err)
+				//}
+				//log.Infow("Collected Actor Changes",
+				//	"MarketChanges", len(actorChanges[builtin2.StorageMarketActorCodeID]),
+				//	"MinerChanges", len(actorChanges[builtin2.StorageMinerActorCodeID]),
+				//	"RewardChanges", len(actorChanges[builtin2.RewardActorCodeID]),
+				//	"AccountChanges", len(actorChanges[builtin2.AccountActorCodeID]),
+				//	"nullRounds", len(nullRounds))
 
 				grp := sync.WaitGroup{}
 
